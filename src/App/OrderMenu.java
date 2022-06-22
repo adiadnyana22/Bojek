@@ -3,13 +3,13 @@ package App;
 import java.util.Scanner;
 
 import Data.Driver;
-import Data.DriverList;
-import Data.OrderList;
+import Data.DriverService;
+import Data.OrderService;
 
 public class OrderMenu {
 	private Scanner sc = new Scanner(System.in);
-	private OrderList orderList = new OrderList();
-	private DriverList driverList = DriverList.getInstance();
+	private OrderService orderService = new OrderService();
+	private DriverService driverService = new DriverService();
 	
 	public void run() {
 		int pilihanMenu = 0;
@@ -50,25 +50,23 @@ public class OrderMenu {
 		sc.nextLine();
 		
 		if(driverType == 1) {
-			orderDriver = driverList.getRandomMotorDriver();
+			orderDriver = driverService.getRandomMotorDriver();
 		} else if(driverType == 2) {
-			orderDriver = driverList.getRandomCarDriver();
+			orderDriver = driverService.getRandomCarDriver();
 		}
 		
 		System.out.println("Fee : " + orderDriver.calculateFee(distance));
 		System.out.println("Searching For Driver ...");
-		
-		orderDriver.incrementOrderCompleted();
 		
 		System.out.println("You Got Driver");
 		System.out.println("Driver Name : " + orderDriver.getName());
 		System.out.println("Plate Number : " + orderDriver.getVehicle().getPlateNumber());
 		System.out.println("Vehicle : " + orderDriver.getVehicle().getMerk() + " " + orderDriver.getVehicle().getType());
 		
-		orderList.acceptOrder(orderDriver, customerName, distance);
+		orderService.acceptOrder(orderDriver, customerName, distance);
 	}
 	
 	private void showOrderMenu() {
-		orderList.showOrder();
+		orderService.showOrder();
 	}
 }

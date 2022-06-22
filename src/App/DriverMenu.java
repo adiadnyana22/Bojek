@@ -2,15 +2,14 @@ package App;
 
 import java.util.Scanner;
 
-import Data.CarDriver;
 import Data.Driver;
-import Data.DriverList;
-import Data.MotorDriver;
+import Data.DriverFactory;
+import Data.DriverService;
 import Data.Vehicle;
 
 public class DriverMenu {
 	private Scanner sc = new Scanner(System.in);
-	private DriverList driverList = DriverList.getInstance();
+	private DriverService driverService = new DriverService();
 	
 	public void run() {
 		int pilihanMenu = 0;
@@ -82,46 +81,54 @@ public class DriverMenu {
 		
 		Driver newDriver = null;
 		Vehicle vehicle = new Vehicle(plateNumber, merk, type);
+		DriverFactory df = new DriverFactory(identityCardNumber, name, gender, phoneNumber, email, dateOfBirth, address, vehicle);
+		
 		if(jenisDriver == 1) {
-			newDriver = new MotorDriver(identityCardNumber, name, gender, phoneNumber, email, dateOfBirth, address, vehicle);
+			newDriver = df.getMotorDriver();
 		} else if(jenisDriver == 2) {
-			newDriver = new CarDriver(identityCardNumber, name, gender, phoneNumber, email, dateOfBirth, address, vehicle);
+			newDriver = df.getCarDriver();
 		}
 		
-		driverList.addDriver(newDriver);
+		driverService.addDriver(newDriver);
 	}
 	
 	private void showAllDriverMenu() {
-		driverList.showAllDriver();
+		driverService.showAllDriver();
 	}
 	
 	private void showMotorDriverMenu() {
-		driverList.showMotorDriver();
+		driverService.showMotorDriver();
 	}
 	
 	private void showCarDriverMenu() {
-		driverList.showCarDriver();
+		driverService.showCarDriver();
 	}
 	
 	private void updateDriverMenu() {
-		String driverId, name, email, phoneNumber, address, boolVehicle;
-		int index;
+		String  name, email, phoneNumber, address, boolVehicle;
+		int driverId;
 		
 		System.out.print("Driver Id : ");
-		driverId = sc.nextLine();
+		driverId = sc.nextInt();
+		sc.nextLine();
 		
-		index = driverList.searchDriver(driverId);
-		if(index != -1) {
+		Driver searchDriver = driverService.searchDriver(driverId);
+		if(searchDriver != null) {
 			System.out.println("Personal Data");
 			System.out.println("-------------");
-			System.out.print("New Name [Kosongkan Jika tidak ingin diganti] : ");
+			System.out.print("New Name [Kosongkan jika tidak ingin diubah] : ");
 			name = sc.nextLine();
-			System.out.print("New Email [Kosongkan Jika tidak ingin diganti] : ");
+			System.out.print("New Email [Kosongkan jika tidak ingin diubah] : ");
 			email = sc.nextLine();
-			System.out.print("New Phone Number [Kosongkan Jika tidak ingin diganti] : ");
+			System.out.print("New Phone Number [Kosongkan jika tidak ingin diubah] : ");
 			phoneNumber = sc.nextLine();
-			System.out.print("New Address [Kosongkan Jika tidak ingin diganti] : ");
+			System.out.print("New Address [Kosongkan jika tidak ingin diubah] : ");
 			address = sc.nextLine();
+			
+			if(!name.isBlank()) searchDriver.setName(name);
+			if(!email.isBlank()) searchDriver.setEmail(email);
+			if(!phoneNumber.isBlank()) searchDriver.setPhoneNumber(phoneNumber);
+			if(!address.isBlank()) searchDriver.setAddress(address);
 			
 			System.out.print("Do you want to update Vehicle (yes/no) ? ");
 			boolVehicle = sc.nextLine();
@@ -130,28 +137,30 @@ public class DriverMenu {
 				
 				System.out.println("Vehicle Data");
 				System.out.println("-------------");
-				System.out.print("New Plate Number [Kosongkan Jika tidak ingin diganti] : ");
+				System.out.print("New Plate Number [Kosongkan jika tidak ingin diubah] : ");
 				plateNumber = sc.nextLine();
-				System.out.print("New Vehicle Merk [Kosongkan Jika tidak ingin diganti] : ");
+				System.out.print("New Vehicle Merk [Kosongkan jika tidak ingin diubah] : ");
 				merk = sc.nextLine();
-				System.out.print("New Vehicle Type [Kosongkan Jika tidak ingin diganti] : ");
+				System.out.print("New Vehicle Type [Kosongkan jika tidak ingin diubah] : ");
 				type = sc.nextLine();
 				
-				driverList.updateVehicle(index, plateNumber, merk, type);
+				if(!plateNumber.isBlank()) searchDriver.getVehicle().setPlateNumber(plateNumber);
+				if(!merk.isBlank()) searchDriver.getVehicle().setMerk(merk);
+				if(!type.isBlank()) searchDriver.getVehicle().setType(type);
 			}
 			
-			driverList.updateDriver(index, name, email, phoneNumber, address);
+			driverService.updateDriver(searchDriver, driverId);
 		} else {
 			System.out.println("Driver tidak ditemukan");
 		}
 	}
 	
 	private void deleteDriverMenu() {
-		String driverId;
+		int driverId;
 		
 		System.out.print("Driver Id : ");
-		driverId = sc.nextLine();
+		driverId = sc.nextInt();
 		
-		driverList.deleteDriver(driverId);
+		driverService.deleteDriver(driverId);
 	}
 }

@@ -2,10 +2,12 @@ package Data;
 
 public class MotorDriver extends Driver {
 
-	public MotorDriver(String identityCardNumber, String name, String gender, String phoneNumber, String email,
-			String dateOfBirth, String address, Vehicle vehicle) {
+	public MotorDriver(String identityCardNumber, String name, String gender, String phoneNumber, String email, String dateOfBirth, String address, Vehicle vehicle) {
 		super(identityCardNumber, name, gender, phoneNumber, email, dateOfBirth, address, vehicle);
-		// TODO Auto-generated constructor stub
+	}
+	
+	public MotorDriver(int id, String identityCardNumber, String name, String gender, String phoneNumber, String email, String dateOfBirth, String address, String joinDate, int orderCompleted, Vehicle vehicle) {
+		super(id, identityCardNumber, name, gender, phoneNumber, email, dateOfBirth, address, joinDate, orderCompleted, vehicle);
 	}
 
 	@Override
